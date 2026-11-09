@@ -710,3 +710,33 @@ var h=rows.shift().map(function(x){return x.trim().toLowerCase()});
 boot(rows.map(function(r){var o={};h.forEach(function(k,i){o[k]=(r[i]||"").trim()});return o}));
 }).catch(function(){document.getElementById(CFG.id+"-cat").innerHTML='<p style="text-align:center;grid-column:1/-1">No pudimos cargar el catálogo. Escríbenos por WhatsApp 💬</p>'});
 })();</script></body></html>
+
+<div id="catalogo"></div>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script>
+const CSV_URL = "PEGA_AQUI_EL_ENLACE_CSV";
+const WA = "573158866882"; // confirma cuál es tu WhatsApp Business
+
+Papa.parse(CSV_URL, {
+  download: true, header: true, skipEmptyLines: true,
+  complete: ({data}) => {
+    const cont = document.getElementById("catalogo");
+    cont.innerHTML = data.map(p => {
+      const ok = p.disponible === "SI";
+      const msg = encodeURIComponent(`Hola Bolizeria! Quiero pedir 1 boli de ${p.sabor}`);
+      return `
+        <article class="card ${ok ? "" : "agotado"}">
+          <img src="${p.foto_url}" alt="${p.sabor}" loading="lazy">
+          <h3>${p.sabor}</h3>
+          <p>${p.descripcion}</p>
+          <strong>$${Number(p.precio).toLocaleString("es-CO")}</strong>
+          ${ok
+            ? `<a href="https://wa.me/${WA}?text=${msg}">Pedir por WhatsApp</a>`
+            : `<span>Agotado por hoy 😅</span>`}
+        </article>`;
+    }).join("");
+  },
+  error: () => document.getElementById("catalogo").textContent =
+    "No pudimos cargar el catálogo, escríbenos por WhatsApp."
+});
+</script>
