@@ -45,8 +45,8 @@
         padding: 0;
         box-shadow: none;
         display: inline-block;
-        max-height: 64px;
-        max-width: 220px;
+        max-height: 192px;
+        max-width: 660px;
         width: auto;
         height: auto;
         object-fit: contain;
